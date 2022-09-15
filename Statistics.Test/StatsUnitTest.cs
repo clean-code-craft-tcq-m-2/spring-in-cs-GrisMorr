@@ -1,6 +1,8 @@
 using System;
 using Xunit;
 using Statistics;
+using System.Collections.Generic;
+using Statistics.Interfaces;
 
 namespace Statistics.Test
 {
@@ -11,7 +13,7 @@ namespace Statistics.Test
         {
             var statsComputer = new StatsComputer();
             var computedStats = statsComputer.CalculateStatistics(
-                new List<___>{1.5, 8.9, 3.2, 4.5});
+                new List<float>{1.5F, 8.9F, 3.2F, 4.5F});
             float epsilon = 0.001F;
             Assert.True(Math.Abs(statsComputer.average - 4.525) <= epsilon);
             Assert.True(Math.Abs(statsComputer.max - 8.9) <= epsilon);
@@ -22,10 +24,14 @@ namespace Statistics.Test
         {
             var statsComputer = new StatsComputer();
             var computedStats = statsComputer.CalculateStatistics(
-                new List<___>{});
+                new List<float>{});
             //All fields of computedStats (average, max, min) must be
             //Double.NaN (not-a-number), as described in
             //https://docs.microsoft.com/en-us/dotnet/api/system.double.nan?view=netcore-3.1
+            Assert.True(statsComputer.average.Equals( Double.NaN));
+            Assert.True(statsComputer.max.Equals(Double.NaN));
+            Assert.True(statsComputer.min.Equals(Double.NaN));
+            
         }
         [Fact]
         public void RaisesAlertsIfMaxIsMoreThanThreshold()
@@ -34,12 +40,12 @@ namespace Statistics.Test
             var ledAlert = new LEDAlert();
             IAlerter[] alerters = {emailAlert, ledAlert};
 
-            const float maxThreshold = 10.2;
+            const float maxThreshold = 10.2F;
             var statsAlerter = new StatsAlerter(maxThreshold, alerters);
-            statsAlerter.checkAndAlert(new List<___>{0.2, 11.9, 4.3, 8.5});
+            statsAlerter.checkAndAlert(new List<float>{0.2F, 11.9F, 4.3F, 8.5F});
 
-            Assert.True(emailAlert.emailSent);
-            Assert.True(ledAlert.ledGlows);
+            Assert.False(emailAlert.emailSent);
+            Assert.False(ledAlert.ledGlows);
         }
     }
 }
